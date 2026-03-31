@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Perfis Facilitadores</title>
+
+<style>
+body {
+  font-family: Arial;
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.resultado {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Selecione os exames:</h2>
+
+<div class="grid" id="listaExames"></div>
+
+<button onclick="verificarPerfis()">Ver Perfis</button>
+<button onclick="limparSelecao()">Limpar seleção</button>
+
+<div class="resultado" id="resultado"></div>
+
+<script>
+
+const exames = [
+"Hg","FH","FR","TGO","GGT","Ca","Cl","P","K","Na",
+"Calcio Ionico","Colesterol","Glicose","Amilase",
+"Proteina Total","Triglicerides","Ureia","Creatinina",
+"ALT","FA","Albumina","Urina","Frutosamina",
+"Sodio","Potassio","Fosforo","T3","T4 Total","T4 Livre","TSH","Bilirrubina"
+];
+
+const perfis = {
+  "Check Up": ["Hg","FH","FR","TGO","GGT","Ca","Cl","P","K","Na","Calcio Ionico","Colesterol","Glicose","Amilase","Proteina Total","Triglicerides"],
+  "Geral Canino": ["Hg","FH","FR"],
+  "Geral Felino": ["Hg","FR","GGT","FA"],
+  "Geral Reduzido": ["FH","FR"],
+  "Geriatrico": ["Hg","Ureia","Creatinina","ALT","GGT","FA","Albumina","Glicose","K","Na"],
+  "Senil": ["Hg","FR","FH","Glicose"],
+  "Senil Completo": ["Hg","FR","FH","Glicose","Urina"],
+  "Obesidade": ["Hg","FR","FH","Glicose","Colesterol","Triglicerides"],
+  "Lipidico": ["Glicose","Colesterol","Triglicerides"],
+  "Cardiologico Completo": ["Hg","FH","FR","Glicose","Ca","P","K","Na","Urina"],
+  "Diabetico": ["Glicose","Frutosamina","Urina"],
+  "Eletrolitos": ["Sodio","Potassio","Fosforo","Calcio"],
+  "Funcao Renal": ["Ureia","Creatinina"],
+  "Renal Completo": ["Hg","Ureia","Creatinina","Fosforo","Urina"],
+  "Renal Reduzido": ["Hg","Ureia","Creatinina"],
+  "Funcao Hepatica": ["ALT","FA","GGT","Albumina"],
+  "Hepatico Completo": ["Hg","ALT","FA","GGT","Proteina Total","Bilirrubina","Ureia"],
+  "Hepatico Reduzido": ["Hg","ALT","FA"],
+  "Reduzido 1": ["Hg","Creatinina","ALT"],
+  "Reduzido 2": ["Hg","Creatinina","FA"],
+  "Hormonal": ["T3","T4 Total","T4 Livre","TSH"],
+  "Hiperadrenocorticismo Dexametasona": ["Hg","Colesterol","Triglicerides","ALT","FA","Albumina"],
+  "Hiperadrenocorticismo ACTH": ["Hg","Colesterol","Triglicerides","ALT","FA","Albumina"],
+  "Hipotireoidismo": ["Hg","T4 Total","T4 Livre","TSH","Glicose","Colesterol","ALT","FA"],
+  "Hipoadrenocorticismo": ["Hg","Sodio","Potassio","ALT","FA","Calcio","Albumina"]
+};
+
+// criar checkboxes
+const lista = document.getElementById("listaExames");
+
+exames.forEach(exame => {
+  lista.innerHTML += `
+    <label>
+      <input type="checkbox" value="${exame}"> ${exame}
+    </label>
+  `;
+});
+
+// verificar perfis
+function verificarPerfis() {
+
+  let selecionados = [];
+
+  document.querySelectorAll("input:checked").forEach(cb => {
+    selecionados.push(cb.value);
+  });
+
+  let encontrados = [];
+
+  for (let perfil in perfis) {
+    let completo = perfis[perfil].every(e =>
+      selecionados.includes(e)
+    );
+
+    if (completo) {
+      encontrados.push(perfil);
+    }
+  }
+
+  let resultado = document.getElementById("resultado");
+
+  if (encontrados.length > 0) {
+    resultado.innerHTML = "Perfis encontrados:<br><br>" + encontrados.join("<br>");
+  } else {
+    resultado.innerHTML = "Nenhum perfil completo encontrado.";
+  }
+}
+
+// 🧹 LIMPAR TUDO
+function limparSelecao() {
+
+  document.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false;
+  });
+
+  document.getElementById("resultado").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>
